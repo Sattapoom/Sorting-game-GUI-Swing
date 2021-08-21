@@ -6,6 +6,18 @@ import java.io.File;
 import java.awt.*;
 import javax.swing.*;
 
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
@@ -110,7 +122,35 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Saving $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     void Manage_file(String mode) {
         if (mode.equals("w")) {
-            
+            try {
+                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+                Document document = documentBuilder.newDocument();
+                Element root = document.createElement("ABCBlockMAP");
+                document.appendChild(root);
+                Element Map = document.createElement("Map");
+                root.appendChild(Map);
+                for (int i=0;i < 3;i++) {
+                    Element Row = document.createElement("Row" + (i+1));
+                    String line = "";
+                    for (int j=0;j < 4;j++) {
+                        line += game_board[i][j];
+                    }
+                    Row.appendChild(document.createTextNode(line));
+                    Map.appendChild(Row);
+                }
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                DOMSource domSource = new DOMSource(document);
+                StreamResult streamResult = new StreamResult(new File("./save.xml"));
+                transformer.transform(domSource, streamResult);
+            } catch (ParserConfigurationException pce) {
+                pce.printStackTrace();
+            } catch (TransformerException tfe) {
+                tfe.printStackTrace();
+            }
         }
         else if (mode.equals("r")) {
 
@@ -129,12 +169,12 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Mouse management $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-    String onClick(int mouse_x,int mouse_y){
+    void onClick(int mouse_x,int mouse_y){
         int row,col;
         row = (int)mouse_y/200;
         col = (int)mouse_x/200;
         moveChar(game_board[row][col]);
-        return game_board[row][col];
+        Manage_file("w");
     }
     //------------------################
     @Override
