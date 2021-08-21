@@ -18,6 +18,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
@@ -153,7 +155,26 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             }
         }
         else if (mode.equals("r")) {
-
+            try {
+                File file = new File("./save.xml");
+                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+                Document document = documentBuilder.parse(file);
+                document.getDocumentElement().normalize();
+                NodeList map = document.getElementsByTagName("Map");
+                Node node = map.item(0);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                    for (int i = 0;i < 3;i++) {
+                        String[] ch = eElement.getElementsByTagName("Row"+(i+1)).item(0).getTextContent().split("");
+                        for (int j = 0;j < 4;j++) {
+                            game_board[i][j] = ch[j];
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else if (mode.equals("d")) {
 
@@ -175,6 +196,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         col = (int)mouse_x/200;
         moveChar(game_board[row][col]);
         Manage_file("w");
+        System.out.println("clicked");
     }
     //------------------################
     @Override
@@ -195,7 +217,15 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             else if (Check_save_exists()){
                 // TODO Continue from saved file.
                 if (screen.getComponent(1).equals(e.getComponent())){
+                    Manage_file("r");
+                    for (int i = 0;i<3;i++) {
+                        for (int j = 0;j<4;j++) {
+                            System.out.print(game_board[i][j]);
+                        }
+                        System.out.println();
+                    }
                     System.out.println("Edit Load save here");
+                    game_mode = "Play";
                 }
             }
         }
@@ -267,6 +297,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     }
     
     void Draw_menu(){
+        screen.removeAll();
         JLabel nLb = new JLabel();
         JLabel cLb = new JLabel();
 
