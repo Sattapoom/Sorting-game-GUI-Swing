@@ -125,12 +125,15 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         int row,col;
         row = (int)mouse_y/200;
         col = (int)mouse_x/200;
+        System.out.println(game_board[row][col]);
         return game_board[row][col];
     }
     //------------------################
     @Override
     public void mouseClicked(MouseEvent e) {
-        // Todo 
+        int x = e.getX();
+        int y = e.getY();
+        this.onClick(x, y);
         
     }
     @Override
@@ -155,7 +158,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     JPanel play_screen = new JPanel();
     JPanel menu_screen = new JPanel();
-    String game_mode = "Menu";
+    String game_mode = "New";
 
     void Setup(){
         this.setTitle("Sorting Game");
@@ -163,6 +166,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         this.setResizable(false);
 
         play_screen.setPreferredSize(new Dimension(800, 600));
+        play_screen.addMouseListener(this);
         menu_screen.setPreferredSize(new Dimension(800, 600));
     }
 
@@ -220,11 +224,12 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 
     SortingGame_SwingGUI(){
         Setup();
-        Change_screen(menu_screen);
+        Change_screen(play_screen);
         this.setVisible(true);
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
         SortingGame_SwingGUI game = new SortingGame_SwingGUI();
+        game.shuffle_board();
     }
 }
