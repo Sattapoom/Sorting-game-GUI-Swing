@@ -155,7 +155,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     JPanel play_screen = new JPanel();
     //JPanel menu = new JPanel();
-    String game_mode = "Menu";
+    String game_mode = "New";
 
     SortingGame_SwingGUI(){
         this.setTitle("Sorting Game");
@@ -172,11 +172,12 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     void Draw_game(){
         Graphics2D g = (Graphics2D) play_screen.getGraphics();
         g.setStroke(new BasicStroke(2));
-        for (int j=1;j<3;j++){
-            g.drawLine(0, j*200, 800, j*200);
-            
-            for (int i=1;i<4;i++){
-                g.drawLine(i*200, 0, i*200, 600);
+        for (int i=0;i<3;i++){
+            g.drawLine(0, i*200, 800, i*200);
+            for (int j=0;j<4;j++){
+                g.drawLine(j*200, 0, j*200, 600);
+                g.setFont(new Font("Microsoft YaHei", Font.PLAIN, 150));
+                g.drawString(game_board[i][j],60+(200*j),150+(200*i));
             }
         }
     }
