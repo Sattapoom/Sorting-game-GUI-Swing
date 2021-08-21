@@ -45,7 +45,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             if ( !(moving.equals(remember[0]) || moving.equals(remember[1]) || moving.equals(remember[2]))) {
                 moveChar(moving);
             }
-            if (0<(int)random(0,1)) {
+            if (0<(int)random(0,2)) {
                 remember[round%3] = moving;
             }
         }
@@ -53,7 +53,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     //------------------################
     int random(int min,int max){
         Random num = new Random();
-        return num.nextInt((max+1)-min) + min;
+        return num.nextInt((max)-min) + min;
     }
     //------------------################
     void moveChar(String c){
@@ -154,39 +154,51 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     JPanel play_screen = new JPanel();
-    //JPanel menu = new JPanel();
-    String game_mode = "New";
+    JPanel menu_screen = new JPanel();
+    String game_mode = "Menu";
 
-    SortingGame_SwingGUI(){
+    void Setup(){
         this.setTitle("Sorting Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
         this.setResizable(false);
 
         play_screen.setPreferredSize(new Dimension(800, 600));
-        this.add(play_screen);
-        this.pack();
-
-        this.setVisible(true);
+        menu_screen.setPreferredSize(new Dimension(800, 600));
     }
 
+    void Change_screen(JPanel screen){
+        this.getContentPane().removeAll();
+        this.add(screen);
+        this.pack();
+        this.repaint();
+    }
+
+    //------------------################
+
     void Draw_game(){
-        Graphics2D g = (Graphics2D) play_screen.getGraphics();
-        g.setStroke(new BasicStroke(2));
+        Graphics2D g2d = (Graphics2D) play_screen.getGraphics();
+        g2d.setStroke(new BasicStroke(2));
         for (int i=0;i<3;i++){
-            g.drawLine(0, i*200, 800, i*200);
+            g2d.drawLine(0, i*200, 800, i*200);
             for (int j=0;j<4;j++){
-                g.drawLine(j*200, 0, j*200, 600);
-                g.setFont(new Font("Microsoft YaHei", Font.PLAIN, 150));
-                g.drawString(game_board[i][j],60+(200*j),150+(200*i));
+                g2d.drawLine(j*200, 0, j*200, 600);
+                g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
+                g2d.drawString(game_board[i][j],60+(200*j),150+(200*i));
             }
         }
     }
 
     void Draw_menu(){
-        JLabel lb = new JLabel("First Label.");  
-        lb.setBounds(50, 50, 100, 30);
-        play_screen.add(lb);
+        Graphics2D g2d = (Graphics2D) menu_screen.getGraphics();
+        g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
+        // New game butt =-=-=-=-=-= New game butt =-=-=-=-=-= New game butt =-=-=-=-=-=
+        g2d.drawRect(250,150,300,100);
+        g2d.drawString("New Game",250,150);
+        // Continue butt =-=-=-=-=-= Continue butt =-=-=-=-=-= Continue butt =-=-=-=-=-=
+        g2d.drawRect(250,350,300,100);
     }
+
+    //------------------################
 
     public void paint(Graphics g){
         switch (game_mode) {
@@ -202,6 +214,14 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 break;
         }
 
+    }
+
+    //------------------################
+
+    SortingGame_SwingGUI(){
+        Setup();
+        Change_screen(menu_screen);
+        this.setVisible(true);
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
