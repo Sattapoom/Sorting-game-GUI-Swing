@@ -1,12 +1,17 @@
 import java.util.Arrays;
 import java.util.Random;
 
-public class SortingGame_SwingGUI {
+import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
+
+public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
-    String[][] game_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
-    int[] index_space = {2,3};
-    
+    private String[][] game_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
+    private int[] index_space = {2,3};
+
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Game's metthord $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
      void shuffle_board(){
         String[] remember = new String[3];
         int ran = (int) random(100,250);
@@ -49,13 +54,6 @@ public class SortingGame_SwingGUI {
     int random(int min,int max){
         Random num = new Random();
         return num.nextInt((max+1)-min) + min;
-    }
-    //------------------################
-    String onClick(int mouse_x,int mouse_y){
-        int row,col;
-        row = (int)mouse_y/200;
-        col = (int)mouse_x/200;
-        return game_board[row][col];
     }
     //------------------################
     void moveChar(String c){
@@ -107,10 +105,11 @@ public class SortingGame_SwingGUI {
             return false;
         }
     }
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Saving $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     void Manage_file(String mode) {
         if (mode.equals("w")) {
-
+            
         }
         else if (mode.equals("r")) {
 
@@ -119,12 +118,92 @@ public class SortingGame_SwingGUI {
 
         }
     }
+
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Mouse management $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    String onClick(int mouse_x,int mouse_y){
+        int row,col;
+        row = (int)mouse_y/200;
+        col = (int)mouse_x/200;
+        return game_board[row][col];
+    }
+    //------------------################
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Todo 
+        
+    }
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // Todo 
+        
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Todo      
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // Todo 
+        
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // Todo 
+    }
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    JPanel play_screen = new JPanel();
+    //JPanel menu = new JPanel();
+    String game_mode = "Menu";
 
+    SortingGame_SwingGUI(){
+        this.setTitle("Sorting Game");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        this.setResizable(false);
 
+        play_screen.setPreferredSize(new Dimension(800, 600));
+        this.add(play_screen);
+        this.pack();
 
+        this.setVisible(true);
+    }
+
+    void Draw_game(){
+        Graphics2D g = (Graphics2D) play_screen.getGraphics();
+        g.setStroke(new BasicStroke(2));
+        for (int j=1;j<3;j++){
+            g.drawLine(0, j*200, 800, j*200);
+            
+            for (int i=1;i<4;i++){
+                g.drawLine(i*200, 0, i*200, 600);
+            }
+        }
+    }
+
+    void Draw_menu(){
+        JLabel lb = new JLabel("First Label.");  
+        lb.setBounds(50, 50, 100, 30);
+        play_screen.add(lb);
+    }
+
+    public void paint(Graphics g){
+        switch (game_mode) {
+            case "New":
+                Draw_game();
+                break;
+
+            case "Menu":
+                Draw_menu();
+                break;
+
+            default:
+                break;
+        }
+
+    }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
-        
+        SortingGame_SwingGUI game = new SortingGame_SwingGUI();
     }
 }
