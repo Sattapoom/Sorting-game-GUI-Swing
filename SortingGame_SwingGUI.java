@@ -105,7 +105,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             return false;
         }
     }
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Saving $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     void Manage_file(String mode) {
         if (mode.equals("w")) {
@@ -119,6 +118,10 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 
+    Boolean Check_file_exists(){
+        return true;
+    }
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Mouse management $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
     String onClick(int mouse_x,int mouse_y){
@@ -128,7 +131,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         moveChar(game_board[row][col]);
         if (checkCondition()){
             game_mode = "Win";
-            Change_screen(win_screen);
+            this.repaint();
         }
         return game_board[row][col];
     }
@@ -139,127 +142,158 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     }
     @Override
     public void mousePressed(MouseEvent e) {
-        // Todo 
-        
+
     }
     @Override
     public void mouseReleased(MouseEvent e) {
-        // Todo  
-        game_mode = "Play";
-        int x = e.getX();
-        int y = e.getY();
-        this.onClick(x, y);
-        Change_screen(play_screen);    
+        if (game_mode.equals("Menu")){
+            if (screen.getComponent(0).equals(e.getComponent())){
+                game_mode = "Play";
+            }
+            else if (Check_file_exists()){
+                // TODO Continue from saved file.
+                if (screen.getComponent(1).equals(e.getComponent())){
+                    System.out.println("Edit Load save here");
+                }
+            }
+        }
+        else if (game_mode.equals("Play")){
+            int x = e.getX();
+            int y = e.getY();
+            this.onClick(x, y);
+        }
+        this.repaint();
     }
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Todo 
-        
+        if (game_mode.equals("Menu")){
+            if (screen.getComponent(0).equals(e.getComponent())){
+                Graphics2D g2d = (Graphics2D) screen.getGraphics();
+                g2d.setStroke(new BasicStroke(3));
+                g2d.setFont(new Font("Calibri", Font.PLAIN, 50));
+                g2d.setColor(Color.decode("#33D81A"));
+                g2d.fillRect(250, 150, 300, 100);
+                g2d.setColor(Color.black);
+                g2d.drawRect(250,150,300,100);
+                g2d.drawString("New Game",300,215);
+            }
+            else if (Check_file_exists()&&screen.getComponent(1).equals(e.getComponent())){
+                Graphics2D g2d = (Graphics2D) screen.getGraphics();
+                g2d.setStroke(new BasicStroke(3));
+                g2d.setFont(new Font("Calibri", Font.PLAIN, 50));
+
+                g2d.setColor(Color.decode("#33D81A"));
+                g2d.fillRect(250, 350, 300, 100);
+
+                g2d.setColor(Color.black);
+                g2d.drawRect(250,350,300,100);
+                g2d.drawString("Continue",315,415);
+            }
+        } 
     }
     @Override
     public void mouseExited(MouseEvent e) {
-        // Todo 
+        if (game_mode.equals("Menu")&&(screen.getComponent(0).equals(e.getComponent()) || screen.getComponent(1).equals(e.getComponent()))){
+            this.repaint(); 
+        }
     }
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    JPanel play_screen = new JPanel();
-    JPanel menu_screen = new JPanel();
-    JPanel win_screen = new JPanel();
+    JPanel screen = new JPanel();
     String game_mode = "Menu";
 
-    void Setup(){
-        this.setTitle("Sorting Game");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-        this.setResizable(false);
-
-        play_screen.setPreferredSize(new Dimension(800, 600));
-        play_screen.addMouseListener(this);
-        menu_screen.setPreferredSize(new Dimension(800, 600));
-        menu_screen.addMouseListener(this);
-        win_screen.setPreferredSize(new Dimension(800, 600));
-
-        Change_screen(menu_screen);
-    }
-
-    void Change_screen(JPanel screen){
-        this.getContentPane().removeAll();
-        this.add(screen);
-        this.pack();
-        this.repaint();
-    }
-
-    //------------------################
-
-    void Draw_game(Graphics g){
-        //Graphics2D g2d = (Graphics2D) play_screen.getGraphics();
-        Graphics2D g2d = (Graphics2D) g;
+    void Draw_game(){
+        screen.removeAll();
+        Graphics2D g2d = (Graphics2D) screen.getGraphics();
         g2d.setStroke(new BasicStroke(2));
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, 800, 600);
-        g2d.setColor(Color.blue);
         for (int i=0;i<3;i++){
+            g2d.setColor(Color.black);
             g2d.drawLine(0, i*200, 800, i*200);
             for (int j=0;j<4;j++){
+                g2d.setColor(Color.black);
                 g2d.drawLine(j*200, 0, j*200, 600);
+                g2d.setColor(Color.blue);
                 g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
                 g2d.drawString(game_board[i][j],60+(200*j),150+(200*i));
             }
         }
     }
+    
+    void Draw_menu(){
+        JLabel nLb = new JLabel();
+        JLabel cLb = new JLabel();
 
-    void Draw_menu(Graphics g){
-        //Graphics2D g2d = (Graphics2D) menu_screen.getGraphics();
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
-        // New game butt =-=-=-=-=-= New game butt =-=-=-=-=-= New game butt =-=-=-=-=-=
+        nLb.setBounds(250, 150, 300, 100);
+        nLb.addMouseListener(this);
+
+        cLb.setBounds(250, 350, 300, 100);
+        cLb.addMouseListener(this);
+
+        screen.add(nLb);
+        screen.add(cLb);
+
+        Graphics2D g2d = (Graphics2D) screen.getGraphics();
+        g2d.setStroke(new BasicStroke(3));
+        g2d.setFont(new Font("Calibri", Font.PLAIN, 50));
+
+        g2d.setColor(Color.decode("#2AEA0E"));
+        g2d.fillRect(250, 150, 300, 100);
+
+        g2d.setColor(Color.black);
         g2d.drawRect(250,150,300,100);
-        g2d.drawString("New Game",250,150);
-        // Continue butt =-=-=-=-=-= Continue butt =-=-=-=-=-= Continue butt =-=-=-=-=-=
-        g2d.drawRect(250,350,300,100);
+        g2d.drawString("New Game",300,215);
+        if (Check_file_exists()){
+            g2d.setColor(Color.decode("#2AEA0E"));
+            g2d.fillRect(250, 350, 300, 100);
+
+            g2d.setColor(Color.black);
+            g2d.drawRect(250,350,300,100);
+            g2d.drawString("Continue",315,415);
+        }
     }
 
-    void Draw_win(Graphics g){
-        //Graphics2D g2d = (Graphics2D) win_screen.getGraphics();
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, 800, 600);
-        g2d.setColor(Color.black);
+    void Draw_win(){
+        Graphics2D g2d = (Graphics2D) screen.getGraphics();
+        g2d.setColor(Color.ORANGE);
         g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
-        g2d.drawString("Win",250,150);
-
+        g2d.drawString("Win",300,325);
     }
 
     //------------------################
 
     public void paint(Graphics g){
+        super.paint(g);
         switch (game_mode) {
             case "Play":
-                Draw_game(g);
+                Draw_game();
                 break;
-
             case "Menu":
-                Draw_menu(g);
+                Draw_menu();
                 break;
             case "Win":
-                Draw_win(g);
+                Draw_win();
                 break;
-
             default:
                 break;
         }
-
     }
 
     //------------------################
 
     SortingGame_SwingGUI(){
-        Setup();
+        this.setTitle("Sorting Game");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        this.setResizable(false);
+
+        screen.setPreferredSize(new Dimension(800, 600));
+        screen.addMouseListener(this);
+        this.add(screen);
+        this.pack();
         this.setVisible(true);
+
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
         SortingGame_SwingGUI game = new SortingGame_SwingGUI();
-        game.shuffle_board();
+        //game.shuffle_board();
     }
 }
