@@ -125,15 +125,16 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         int row,col;
         row = (int)mouse_y/200;
         col = (int)mouse_x/200;
-        System.out.println(game_board[row][col]);
+        moveChar(game_board[row][col]);
+        if (checkCondition()){
+            game_mode = "Win";
+            Change_screen(win_screen);
+        }
         return game_board[row][col];
     }
     //------------------################
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        this.onClick(x, y);
         
     }
     @Override
@@ -143,7 +144,12 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     }
     @Override
     public void mouseReleased(MouseEvent e) {
-        // Todo      
+        // Todo  
+        game_mode = "Play";
+        int x = e.getX();
+        int y = e.getY();
+        this.onClick(x, y);
+        Change_screen(play_screen);    
     }
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -158,7 +164,8 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ GUI $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     JPanel play_screen = new JPanel();
     JPanel menu_screen = new JPanel();
-    String game_mode = "New";
+    JPanel win_screen = new JPanel();
+    String game_mode = "Menu";
 
     void Setup(){
         this.setTitle("Sorting Game");
@@ -168,6 +175,10 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         play_screen.setPreferredSize(new Dimension(800, 600));
         play_screen.addMouseListener(this);
         menu_screen.setPreferredSize(new Dimension(800, 600));
+        menu_screen.addMouseListener(this);
+        win_screen.setPreferredSize(new Dimension(800, 600));
+
+        Change_screen(menu_screen);
     }
 
     void Change_screen(JPanel screen){
@@ -179,9 +190,13 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 
     //------------------################
 
-    void Draw_game(){
-        Graphics2D g2d = (Graphics2D) play_screen.getGraphics();
+    void Draw_game(Graphics g){
+        //Graphics2D g2d = (Graphics2D) play_screen.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, 800, 600);
+        g2d.setColor(Color.blue);
         for (int i=0;i<3;i++){
             g2d.drawLine(0, i*200, 800, i*200);
             for (int j=0;j<4;j++){
@@ -192,8 +207,9 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 
-    void Draw_menu(){
-        Graphics2D g2d = (Graphics2D) menu_screen.getGraphics();
+    void Draw_menu(Graphics g){
+        //Graphics2D g2d = (Graphics2D) menu_screen.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
         // New game butt =-=-=-=-=-= New game butt =-=-=-=-=-= New game butt =-=-=-=-=-=
         g2d.drawRect(250,150,300,100);
@@ -202,16 +218,31 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         g2d.drawRect(250,350,300,100);
     }
 
+    void Draw_win(Graphics g){
+        //Graphics2D g2d = (Graphics2D) win_screen.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, 800, 600);
+        g2d.setColor(Color.black);
+        g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
+        g2d.drawString("Win",250,150);
+
+    }
+
     //------------------################
 
     public void paint(Graphics g){
         switch (game_mode) {
-            case "New":
-                Draw_game();
+            case "Play":
+                Draw_game(g);
                 break;
 
             case "Menu":
-                Draw_menu();
+                Draw_menu(g);
+                break;
+            case "Win":
+                Draw_win(g);
                 break;
 
             default:
@@ -224,7 +255,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 
     SortingGame_SwingGUI(){
         Setup();
-        Change_screen(play_screen);
         this.setVisible(true);
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
