@@ -169,6 +169,10 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                         String[] ch = eElement.getElementsByTagName("Row"+(i+1)).item(0).getTextContent().split("");
                         for (int j = 0;j < 4;j++) {
                             game_board[i][j] = ch[j];
+                            if (game_board[i][j].equals(" ")) {
+                                index_space[0] = i;
+                                index_space[1] = j;
+                            }
                         }
                     }
                 }
@@ -177,14 +181,54 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             }
         }
         else if (mode.equals("d")) {
-
+            try {
+                final String[][] sorted_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
+                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+                Document document = documentBuilder.newDocument();
+                Element root = document.createElement("ABCBlockMAP");
+                document.appendChild(root);
+                Element Map = document.createElement("Map");
+                root.appendChild(Map);
+                for (int i=0;i < 3;i++) {
+                    Element Row = document.createElement("Row" + (i+1));
+                    String line = "";
+                    for (int j=0;j < 4;j++) {
+                        line += sorted_board[i][j];
+                    }
+                    Row.appendChild(document.createTextNode(line));
+                    Map.appendChild(Row);
+                }
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                DOMSource domSource = new DOMSource(document);
+                StreamResult streamResult = new StreamResult(new File("./save.xml"));
+                transformer.transform(domSource, streamResult);
+            } catch (ParserConfigurationException pce) {
+                pce.printStackTrace();
+            } catch (TransformerException tfe) {
+                tfe.printStackTrace();
+            }
         }
     }
 
     Boolean Check_save_exists(){
         File saveFile = new File("save.xml");
         boolean exists = saveFile.exists();
-        return exists;
+        if (exists) {
+            Manage_file("r");
+            if (checkCondition()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        else {
+            Manage_file("d");
+            return false;
+        }
 
     }
 
@@ -196,7 +240,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         col = (int)mouse_x/200;
         moveChar(game_board[row][col]);
         Manage_file("w");
-        System.out.println("clicked");
     }
     //------------------################
     @Override
@@ -212,6 +255,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         if (game_mode.equals("Menu")){
             if (screen.getComponent(0).equals(e.getComponent())){
                 shuffle_board();
+                Manage_file("w");
                 game_mode = "Play";
             }
             else if (Check_save_exists()){
@@ -220,11 +264,8 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                     Manage_file("r");
                     for (int i = 0;i<3;i++) {
                         for (int j = 0;j<4;j++) {
-                            System.out.print(game_board[i][j]);
                         }
-                        System.out.println();
                     }
-                    System.out.println("Edit Load save here");
                     game_mode = "Play";
                 }
             }
