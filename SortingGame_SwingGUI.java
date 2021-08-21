@@ -2,8 +2,10 @@ import java.util.Arrays;
 import java.util.Random;
 
 import java.awt.event.*;
-import javax.swing.*;
+import java.io.File;
 import java.awt.*;
+import javax.swing.*;
+
 
 public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
@@ -118,8 +120,11 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 
-    Boolean Check_file_exists(){
-        return true;
+    Boolean Check_save_exists(){
+        File saveFile = new File("save.xml");
+        boolean exists = saveFile.exists();
+        return exists;
+
     }
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Mouse management $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -129,10 +134,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         row = (int)mouse_y/200;
         col = (int)mouse_x/200;
         moveChar(game_board[row][col]);
-        if (checkCondition()){
-            game_mode = "Win";
-            this.repaint();
-        }
         return game_board[row][col];
     }
     //------------------################
@@ -148,9 +149,10 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     public void mouseReleased(MouseEvent e) {
         if (game_mode.equals("Menu")){
             if (screen.getComponent(0).equals(e.getComponent())){
+                shuffle_board();
                 game_mode = "Play";
             }
-            else if (Check_file_exists()){
+            else if (Check_save_exists()){
                 // TODO Continue from saved file.
                 if (screen.getComponent(1).equals(e.getComponent())){
                     System.out.println("Edit Load save here");
@@ -161,6 +163,12 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             int x = e.getX();
             int y = e.getY();
             this.onClick(x, y);
+            if (checkCondition()){
+                game_mode = "Win";
+            }
+        }
+        else if (game_mode.equals("Win")){
+            game_mode = "Menu";
         }
         this.repaint();
     }
@@ -177,7 +185,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 g2d.drawRect(250,150,300,100);
                 g2d.drawString("New Game",300,215);
             }
-            else if (Check_file_exists()&&screen.getComponent(1).equals(e.getComponent())){
+            else if (Check_save_exists()&&screen.getComponent(1).equals(e.getComponent())){
                 Graphics2D g2d = (Graphics2D) screen.getGraphics();
                 g2d.setStroke(new BasicStroke(3));
                 g2d.setFont(new Font("Calibri", Font.PLAIN, 50));
@@ -241,7 +249,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         g2d.setColor(Color.black);
         g2d.drawRect(250,150,300,100);
         g2d.drawString("New Game",300,215);
-        if (Check_file_exists()){
+        if (Check_save_exists()){
             g2d.setColor(Color.decode("#2AEA0E"));
             g2d.fillRect(250, 350, 300, 100);
 
@@ -255,7 +263,11 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         Graphics2D g2d = (Graphics2D) screen.getGraphics();
         g2d.setColor(Color.ORANGE);
         g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
-        g2d.drawString("Win",300,325);
+        g2d.drawString("You Win",150,325);
+
+        g2d.setColor(Color.gray);
+        g2d.setFont(new Font("Calibri", Font.PLAIN, 20));
+        g2d.drawString("Click for back to main menu.",300,500);
     }
 
     //------------------################
@@ -294,6 +306,5 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
         SortingGame_SwingGUI game = new SortingGame_SwingGUI();
-        //game.shuffle_board();
     }
 }
