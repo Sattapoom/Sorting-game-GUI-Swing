@@ -23,12 +23,12 @@ import org.w3c.dom.Node;
 
 public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
-    private String[][] game_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
-    private int[] index_space = {2,3};
+   final private String[][] game_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
+   final private int[] index_space = {2,3};
 
-// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Game's metthord $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Game's method $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-     void shuffle_board(){
+     void shuffle_board(){ // method สำหรับสุ่มตาราง
         String[] remember = new String[3];
         int ran = (int) random(100,250);
         for (int round=0 ; round<=ran;round++) {
@@ -72,7 +72,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         return num.nextInt((max)-min) + min;
     }
     //------------------################
-    void moveChar(String c){
+    void moveChar(String c){ // method สำหรับเลื่อนตัวอักษร
         int topIndex = index_space[0] - 1;
         if (topIndex >= 0) {
             if (game_board[topIndex][index_space[1]].equals(c)) {
@@ -112,7 +112,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         return;
     }
     //------------------################
-    Boolean checkCondition(){
+    Boolean checkCondition(){ //method สำหรับเช็คว่าเล่นชนะแล้วหรือยัง หากชนะจะ return true
         String[][] sorted_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
         if (Arrays.deepEquals(game_board, sorted_board)){
             return true;
@@ -122,8 +122,8 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Saving $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    void Manage_file(String mode) {
-        if (mode.equals("w")) {
+    void Manage_file(String mode) { //method สำหรับ save file
+        if (mode.equals("w")) { // mode "w" เป็นโหมดสำหรับการเขียน file
             try {
                 DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
@@ -154,7 +154,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 tfe.printStackTrace();
             }
         }
-        else if (mode.equals("r")) {
+        else if (mode.equals("r")) { //mode "r" โหมดสำหรับการอ่าน file
             try {
                 File file = new File("./save.xml");
                 DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -180,7 +180,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 e.printStackTrace();
             }
         }
-        else if (mode.equals("d")) {
+        else if (mode.equals("d")) { //mode "d" โหมดสำหรับลบ file
             try {
                 final String[][] sorted_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
                 DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -214,7 +214,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 
-    Boolean Check_save_exists(){
+    Boolean Check_save_exists(){ // สำหรับเช็คว่ามี file save อยู่หรือไม่
         File saveFile = new File("save.xml");
         boolean exists = saveFile.exists();
         if (exists) {
@@ -337,7 +337,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
     
-    void Draw_menu(){
+    void Draw_menu(){ // วาดหน้าเมนูสำหรับเลือก newgame ถ้ามี save ก็จะมีให้เลือก continue
         screen.removeAll();
         JLabel nLb = new JLabel();
         JLabel cLb = new JLabel();
@@ -371,7 +371,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
         }
     }
 
-    void Draw_win(){
+    void Draw_win(){ //หากเล่นเกมจนชนะจะขึ้นว่า You win
         Graphics2D g2d = (Graphics2D) screen.getGraphics();
         g2d.setColor(Color.ORANGE);
         g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
