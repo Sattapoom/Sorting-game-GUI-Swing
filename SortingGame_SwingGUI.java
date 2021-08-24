@@ -16,7 +16,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
    final private String[][] game_board = {{"A","B","C","D"}, {"E","F","G","H"}, {"I","J","K"," "}};
    final private int[] index_space = {2,3};
-
+    int moveCount = 0;
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Game's method $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      void shuffle_board(){ // method สำหรับสุ่มตาราง
@@ -56,6 +56,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 remember[round%3] = moving;
             }
         }
+        moveCount = 0;
     }
     //------------------################
     int random(int min,int max){
@@ -70,6 +71,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             game_board[topIndex][index_space[1]] = " ";
             game_board[index_space[0]][index_space[1]] = c;
             index_space[0] = topIndex;
+            moveCount += 1;
             return;
             }
         }
@@ -79,6 +81,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             game_board[bottomIndex][index_space[1]] = " ";
             game_board[index_space[0]][index_space[1]] = c;
             index_space[0] = bottomIndex;
+            moveCount += 1;
             return;
             }
         }
@@ -88,6 +91,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             game_board[index_space[0]][leftIndex] = " ";
             game_board[index_space[0]][index_space[1]] = c;
             index_space[1] = leftIndex;
+            moveCount += 1;
             return;
             }
         }
@@ -97,6 +101,7 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
             game_board[index_space[0]][rightIndex] = " ";
             game_board[index_space[0]][index_space[1]] = c;
             index_space[1] = rightIndex;
+            moveCount += 1;
             return;
             }
         }
@@ -121,6 +126,18 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 Document document = documentBuilder.newDocument();
                 Element root = document.createElement("ABCBlockMAP");
                 document.appendChild(root);
+                // Add information
+                Element information = document.createElement("information");
+                root.appendChild(information);
+                Element GameVersion = document.createElement("GameVersion");
+                GameVersion.appendChild(document.createTextNode("3"));
+                information.appendChild(GameVersion);
+                Element PlayTime = document.createElement("PlayTime");
+                PlayTime.appendChild(document.createTextNode("0"));
+                information.appendChild(PlayTime);
+                Element MoveCount = document.createElement("MoveCount");
+                MoveCount.appendChild(document.createTextNode(String.valueOf(moveCount)));
+                information.appendChild(MoveCount);
                 Element Map = document.createElement("Map");
                 root.appendChild(Map);
                 for (int i=0;i < 3;i++) {
@@ -179,6 +196,17 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 Document document = documentBuilder.newDocument();
                 Element root = document.createElement("ABCBlockMAP");
                 document.appendChild(root);
+                Element information = document.createElement("information");
+                root.appendChild(information);
+                Element GameVersion = document.createElement("GameVersion");
+                GameVersion.appendChild(document.createTextNode("3"));
+                information.appendChild(GameVersion);
+                Element PlayTime = document.createElement("PlayTime");
+                PlayTime.appendChild(document.createTextNode("0"));
+                information.appendChild(PlayTime);
+                Element MoveCount = document.createElement("MoveCount");
+                MoveCount.appendChild(document.createTextNode("0"));
+                information.appendChild(MoveCount);
                 Element Map = document.createElement("Map");
                 root.appendChild(Map);
                 for (int i=0;i < 3;i++) {
