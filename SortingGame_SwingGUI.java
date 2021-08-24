@@ -6,20 +6,11 @@ import java.io.File;
 import java.awt.*;
 import javax.swing.*;
 
-import java.io.File;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     
@@ -262,10 +253,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
                 // TODO Continue from saved file.
                 if (screen.getComponent(1).equals(e.getComponent())){
                     Manage_file("r");
-                    for (int i = 0;i<3;i++) {
-                        for (int j = 0;j<4;j++) {
-                        }
-                    }
                     game_mode = "Play";
                 }
             }
@@ -417,6 +404,6 @@ public class SortingGame_SwingGUI extends JFrame implements MouseListener{
     }
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     public static void main(String[] args) {
-        SortingGame_SwingGUI game = new SortingGame_SwingGUI();
+        new SortingGame_SwingGUI();
     }
 }
